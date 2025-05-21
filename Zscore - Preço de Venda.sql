@@ -56,7 +56,7 @@ WITH dados_faturamento AS (
     ON ped.mandt = vend.client 
     AND relv.partner = vend.partner
   WHERE
-    nf.pstdat between '2025-04-01' and '2025-04-30' 
+    nf.pstdat between '2025-03-01' and '2025-04-30' 
     AND nf.parid > '1000000000' 
     AND PED.SPART = '02'
     AND nf.nfenum <> 'NULL' 
@@ -110,7 +110,7 @@ JOIN
   estatisticas_produto ep
 ON
   df.Codigo_Material = ep.Codigo_Material
-  AND df.Centro = ep.Centro
+  AND df.Centro = ep.Centro 
 ORDER BY
   df.Data_Lcto ASC,
   ABS(ROUND((df.Valor_Unitario - ep.media_valor_unitario) / NULLIF(ep.desvio_padrao_valor_unitario, 0), 2)) DESC
