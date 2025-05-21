@@ -67,12 +67,14 @@ WITH dados_faturamento AS (
 
 estatisticas_produto AS (
   SELECT
+    Centro,
     Codigo_Material,
     ROUND(AVG(Valor_Unitario), 2) AS media_valor_unitario,
     ROUND(STDDEV(Valor_Unitario), 2) AS desvio_padrao_valor_unitario
   FROM
     dados_faturamento
   GROUP BY
+    Centro,
     Codigo_Material
 )
 
@@ -94,7 +96,7 @@ SELECT
   ep.media_valor_unitario,
   ep.desvio_padrao_valor_unitario,
   CASE
-    WHEN ep.desvio_padrao_valor_unitario = 0 THEN 0 -- Evita divisão por zero
+    WHEN ep.desvio_padrao_valor_unitario = 0 THEN 0
     ELSE ROUND((df.Valor_Unitario - ep.media_valor_unitario) / NULLIF(ep.desvio_padrao_valor_unitario, 0), 2)
   END AS zscore_valor_unitario,
   CASE
@@ -108,6 +110,7 @@ JOIN
   estatisticas_produto ep
 ON
   df.Codigo_Material = ep.Codigo_Material
+  AND df.Centro = ep.Centro
 ORDER BY
   df.Data_Lcto ASC,
   ABS(ROUND((df.Valor_Unitario - ep.media_valor_unitario) / NULLIF(ep.desvio_padrao_valor_unitario, 0), 2)) DESC
